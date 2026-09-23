@@ -17,19 +17,22 @@ export default function Home() {
         </p>
 
         <div className="flex flex-row gap-4 m-2">
-          <Link href="/login">
-            <button className="cursor-pointer relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
-              <span className="relative px-4 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-transparent dark:bg-gray-900 leading-5">
-                Start Here
-              </span>
-            </button>
+          <Link
+            key={"/login"}
+            href={"/login"}
+            className="group/link relative overflow-hidden rounded-md border-2 border-white/10 bg-white/[0.04] px-4.5 py-3.5 text-base font-medium text-zinc-300 transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-200/25 hover:bg-white/15 hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-200/45 active:translate-y-0"
+          >
+            <span className="absolute inset-x-2 bottom-1 h-px scale-x-0 bg-gradient-to-r from-amber-200 via-emerald-200 to-transparent transition-transform duration-300 group-hover/link:scale-x-100" />
+            <span className="relative hover:font-bold ">Start Here</span>
           </Link>
-          <Link href="/about">
-            <button className="relative cursor-pointer inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-blue-600 to-purple-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
-              <span className="relative px-4 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-transparent dark:bg-gray-900 leading-5">
-                Read More
-              </span>
-            </button>
+
+          <Link
+            key={"/about"}
+            href={"/about"}
+            className="group/link relative overflow-hidden rounded-md border-2 border-white/10 bg-white/[0.04] px-4.5 py-3.5 text-base font-medium text-zinc-300 transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-200/25 hover:bg-white/15 hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-200/45 active:translate-y-0"
+          >
+            <span className="absolute inset-x-2 bottom-1 h-px scale-x-0 bg-gradient-to-r from-amber-200 via-emerald-200 to-transparent transition-transform duration-300 group-hover/link:scale-x-100" />
+            <span className="relative hover:font-bold">Read more</span>
           </Link>
         </div>
       </div>
@@ -65,6 +68,13 @@ export default function Home() {
       </div>
 
       <div className="h-1 opacity-10 bg-white"></div>
+      
+      <div className="m-6 mx-auto mb-16 flex flex-col items-center justify-center text-white px-6">
+        <h2 className="text-2xl font-bold text-center text-white mb-4 p-4 ">Watch Our Video</h2>
+
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/tVzUXW6siu0?si=tPZfma4XHJ3BZRKa" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
+
+      </div>
     </>
   );
 }
