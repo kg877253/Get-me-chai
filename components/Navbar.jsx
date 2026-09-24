@@ -145,12 +145,25 @@ const Navbar = () => {
                     )}
 
                     {!session && (
-                        <li>
-                            <Link href={"/login"} className="group/login relative inline-flex h-10 cursor-pointer items-center justify-center overflow-hidden rounded-md bg-zinc-50 px-4 text-sm font-semibold text-zinc-950 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-amber-100 hover:shadow-[0_12px_30px_rgba(245,158,11,0.18)] focus:outline-none focus:ring-2 focus:ring-amber-200/55 focus:ring-offset-2 focus:ring-offset-[#020817] active:translate-y-0">
-                                <span className="absolute inset-y-0 left-[-60%] w-1/2 skew-x-[-20deg] bg-white/70 opacity-0 transition-all duration-700 group-hover/login:left-[130%] group-hover/login:opacity-100" />
-                                <span className="relative">LOGIN</span>
-                            </Link>
-                        </li>
+                        <>
+                            <li>
+                                <Link
+                                    href="/signup"
+                                    className="rounded-md border border-white/15 px-3.5 py-2 text-sm font-medium text-zinc-200 transition-colors hover:border-amber-200/30 hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-200/45"
+                                >
+                                    Sign up
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href="/login"
+                                    className="group/login relative inline-flex h-10 cursor-pointer items-center justify-center overflow-hidden rounded-md bg-zinc-50 px-4 text-sm font-semibold text-zinc-950 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-amber-100 hover:shadow-[0_12px_30px_rgba(245,158,11,0.18)] focus:outline-none focus:ring-2 focus:ring-amber-200/55 focus:ring-offset-2 focus:ring-offset-[#020817] active:translate-y-0"
+                                >
+                                    <span className="absolute inset-y-0 left-[-60%] w-1/2 skew-x-[-20deg] bg-white/70 opacity-0 transition-all duration-700 group-hover/login:left-[130%] group-hover/login:opacity-100" />
+                                    <span className="relative">Log in</span>
+                                </Link>
+                            </li>
+                        </>
                     )}
 
                 </ul>

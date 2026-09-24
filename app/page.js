@@ -18,11 +18,10 @@ export default function Home() {
 
         <div className="flex flex-row gap-4 m-2">
           <Link
-            key={"/login"}
-            href={"/login"}
+            key={"/signup"}
+            href={"/signup"}
             className="group/link relative overflow-hidden rounded-md border-2 border-white/10 bg-white/[0.04] px-4.5 py-3.5 text-base font-medium text-zinc-300 transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-200/25 hover:bg-white/15 hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-200/45 active:translate-y-0"
           >
-            <span className="absolute inset-x-2 bottom-1 h-px scale-x-0 bg-gradient-to-r from-amber-200 via-emerald-200 to-transparent transition-transform duration-300 group-hover/link:scale-x-100" />
             <span className="relative hover:font-bold ">Start Here</span>
           </Link>
 
@@ -68,7 +67,7 @@ export default function Home() {
       </div>
 
       <div className="h-1 opacity-10 bg-white"></div>
-      
+
       <div className="m-6 mx-auto mb-16 flex flex-col items-center justify-center text-white px-6">
         <h2 className="text-2xl font-bold text-center text-white mb-4 p-4 ">Watch Our Video</h2>
 
