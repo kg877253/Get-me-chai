@@ -63,6 +63,7 @@ export const initiatePayment = async (amount, to_username, paymentform) => {
         orderId: String(order.id),
         amount: Number(order.amount),
         currency: String(order.currency),
+        receipt: String(order.receipt),
         key_id: creator.razorpayid,     // pehle process.env.NEXT_PUBLIC_KEY_ID tha
     }
 }
