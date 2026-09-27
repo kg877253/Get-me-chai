@@ -48,7 +48,7 @@ const About = () => {
                 <p className="text-sm font-medium uppercase tracking-[0.2em] text-orange-200/80">The simple idea</p>
                 <h2 className="mt-3 text-3xl font-bold">One chai at a time.</h2>
               </div>
-              <Image src="/chai.gif" width={64} height={64} alt="A cup of chai" className="rounded-full" />
+              <Image src="/chai.gif" unoptimized width={64} height={64} alt="A cup of chai" className="rounded-full" />
             </div>
             <div className="mt-8 space-y-5">
               <div className="flex gap-4 border-b border-white/10 pb-5">
@@ -81,7 +81,7 @@ const About = () => {
             { image: '/people.gif', title: 'Creators grow', text: 'Build a lasting connection around the work you care about.' },
           ].map((item) => (
             <article key={item.title} className="rounded-2xl border border-white/10 bg-white/4 p-6 transition hover:-translate-y-1 hover:border-orange-200/30 hover:bg-white/[0.07]">
-              <Image src={item.image} width={58} height={58} alt="" className="mb-5 rounded-full bg-slate-200/10 p-2" />
+              <Image src={item.image} unoptimized width={58} height={58} alt="" className="mb-5 rounded-full bg-slate-200/10 p-2" />
               <h3 className="text-lg font-semibold">{item.title}</h3>
               <p className="mt-2 text-sm leading-6 text-slate-400">{item.text}</p>
             </article>

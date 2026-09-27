@@ -53,7 +53,7 @@ export default function AuthShell({ mode, errorCode }) {
         </p>
       )}
 
-      <AuthSocialButtons mode={mode} />
+      <AuthSocialButtons mode={mode}  />
 
       <p className="mt-10 text-sm text-gray-400">
         {isSignup ? (

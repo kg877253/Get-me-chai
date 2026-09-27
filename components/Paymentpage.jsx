@@ -188,7 +188,7 @@ const Paymentpage = ({ username }) => {
                                 )}
                                 {payments.map((p) => (
                                     <li key={p._id} className='flex gap-3 items-start hover:bg-white/[0.04] transition-colors duration-150 rounded-xl p-3'>
-                                        <img className='w-9 h-9 rounded-full shrink-0 ring-1 ring-white/10 p-1' src="/avatar.gif" alt="" />
+                                        <img className='w-9 h-9 rounded-full shrink-0 ring-1 ring-white/10 p-1' unoptimized src="/avatar.gif" alt="" />
                                         <div className="min-w-0 flex-1">
                                             <div className="flex items-center justify-between gap-2">
                                                 <p className='text-sm font-medium break-words'>{p.name}</p>

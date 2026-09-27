@@ -10,6 +10,8 @@ const UserSchema = new mongoose.Schema({
     razorpaysecret: { type: String },
     createdat: { type: Date, default: Date.now },
     updatedat: { type: Date, default: Date.now },
+    role: { type: String , enum: ["user", "creator"], default: "user" },
+    profilecompleted: { type: Boolean, default: false},
 });
 
 export default mongoose.models.User || mongoose.model("User", UserSchema);

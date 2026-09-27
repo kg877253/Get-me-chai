@@ -1,6 +1,7 @@
 "use client"
 
 import { signIn } from "next-auth/react"
+import { useState } from "react"
 
 const AUTH_INTENT_COOKIE = "auth_intent"
 
@@ -8,17 +9,41 @@ function setAuthIntent(intent) {
   document.cookie = `${AUTH_INTENT_COOKIE}=${intent}; path=/; max-age=600; SameSite=Lax`
 }
 
+function setrolecookie(role) {
+  document.cookie = `role=${role}; path=/; max-age=600; SameSite=Lax`
+}
+
 const buttonClass =
   "group flex cursor-pointer items-center gap-3 w-full px-5 py-3 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 text-sm font-medium text-gray-100 transition-all duration-300 ease-out hover:bg-white/10 hover:scale-[1.03] hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-400/50"
 
 export default function AuthSocialButtons({ mode = "login" }) {
+
+  const [role, setrole] = useState("user")
+  const issignup = mode === "signup"
+
   const startOAuth = (provider) => {
     setAuthIntent(mode)
+    setrolecookie(role)
     signIn(provider, { callbackUrl: "/dashboard" })
   }
 
   return (
     <div className="flex flex-col gap-3 w-full max-w-xs">
+
+      {issignup && (
+        <>
+          <p className="text-gray-400 text-sm mb-2 text-center max-w-sm">
+            You are signing up as <span className="text-orange-400">{role}</span>.
+          </p>
+          <button
+            onClick={() => setrole(role === "user" ? "creator" : "user")} 
+            className="mb-4 max-w-xs w-1/2 rounded-xl border border-gray-400/40 bg-gray-500/10 mx-auto px-2 py-2 text-sm text-gray-200 text-center hover:bg-gray-500/20 transition-colors duration-300 cursor-pointer"
+          >
+            {role === "user" ? "Switch to Creator" : "Switch to User"}
+          </button>
+        </>
+      )}
+
       <button
         type="button"
         onClick={() => startOAuth("google")}

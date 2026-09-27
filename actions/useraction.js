@@ -134,6 +134,7 @@ export const updateprofile = async (data) => {
         username: newUsername,
         profilepic: f.profilepic,
         coverpic: f.coverpic,
+        profilecompleted: Boolean(newUsername && f.name && (f.razorpayid || me.razorpayid)),
     }
     if (f.razorpayid) updates.razorpayid = f.razorpayid
     if (f.razorpaysecret) updates.razorpaysecret = f.razorpaysecret

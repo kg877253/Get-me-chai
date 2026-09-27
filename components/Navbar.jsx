@@ -68,7 +68,7 @@ const Navbar = () => {
                 >
                     <span className="relative flex size-10 items-center justify-center rounded-lg border border-white/15 bg-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_10px_25px_rgba(0,0,0,0.25)] transition-transform duration-300 group-hover/brand:-rotate-3 group-hover/brand:scale-105">
                         <span className="absolute inset-0 rounded-lg bg-gradient-to-br from-amber-300/20 via-transparent to-emerald-300/10 opacity-0 transition-opacity duration-300 group-hover/brand:opacity-100" />
-                        <Image src="/chai.gif" alt="Logo" width={30} height={30} className="relative" />
+                        <Image src="/chai.gif" unoptimized alt="Logo" width={30} height={30} className="relative" />
                     </span>
                     <span className="leading-tight">
                         <h1 className="bg-gradient-to-r from-white via-amber-100 to-emerald-100 bg-clip-text text-base font-bold tracking-tight text-transparent md:text-lg">Get-me-chai</h1>

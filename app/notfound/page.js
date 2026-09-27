@@ -16,6 +16,7 @@ const Notfoundpage = () => {
                 <div className="mx-auto mb-8 flex h-28 w-28 items-center justify-center rounded-[2rem] border border-orange-300/20 bg-orange-300/10 shadow-[0_0_80px_rgba(251,146,60,0.14)] sm:h-32 sm:w-32">
                     <Image
                         src="/chai.gif"
+                        unoptimized
                         alt="A steaming cup of chai"
                         width={76}
                         height={76}
