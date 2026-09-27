@@ -5,10 +5,10 @@ import { useState } from "react"
 
 const AUTH_INTENT_COOKIE = "auth_intent"
 
+//aise cookies set karne ke liye function
 function setAuthIntent(intent) {
   document.cookie = `${AUTH_INTENT_COOKIE}=${intent}; path=/; max-age=600; SameSite=Lax`
 }
-
 function setrolecookie(role) {
   document.cookie = `role=${role}; path=/; max-age=600; SameSite=Lax`
 }
@@ -22,6 +22,7 @@ export default function AuthSocialButtons({ mode = "login" }) {
   const issignup = mode === "signup"
 
   const startOAuth = (provider) => {
+    // Set the auth intent and role in cookies before initiating OAuth
     setAuthIntent(mode)
     setrolecookie(role)
     signIn(provider, { callbackUrl: "/dashboard" })
