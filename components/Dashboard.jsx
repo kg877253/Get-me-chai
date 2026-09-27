@@ -89,6 +89,7 @@ const Dashboard = () => {
     return (
         <>
             {profiledone && (
+                
                 <div className="flex justify-center px-4 py-12 bg-[#0a0e17] min-h-[75vh] max-h-[90vh] text-white">
                     <div className="w-full max-w-xl bg-[#111826] border border-white/10 rounded-2xl p-8 shadow-lg">
 
