@@ -38,6 +38,7 @@ export default function AuthShell({ mode, errorCode }) {
           </>
         )}
       </h1>
+      
       <p className="text-gray-400 text-sm mb-6 text-center max-w-sm">
         {isSignup
           ? "New here? Create your account with Google or GitHub."
