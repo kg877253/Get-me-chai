@@ -26,6 +26,7 @@ const Paymentpage = ({ username }) => {
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(false)
     const [mounted, setMounted] = useState(false)
+    const [role, setrole] = useState()
 
     const quickAmounts = [10, 25, 50, 100]
 
@@ -51,6 +52,10 @@ const Paymentpage = ({ username }) => {
         try {
             const user = await fetchuser(username);
             setcurrentuser(user);
+            setrole(user.role);
+            if (user.role === "user") {
+                router.push("/notfound")
+            }
             const data = await fetchpayments(username);
             setpayments(data.list);
             setTotalSupporters(data.total);
@@ -121,8 +126,8 @@ const Paymentpage = ({ username }) => {
 
     return (
         <>
-            <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="afterInteractive" />
 
+            <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="afterInteractive" />
             <div className="min-h-screen bg-[#0a0a0c] text-white flex flex-col items-center">
 
                 {/* Full-bleed cover */}
@@ -188,7 +193,7 @@ const Paymentpage = ({ username }) => {
                                 )}
                                 {payments.map((p) => (
                                     <li key={p._id} className='flex gap-3 items-start hover:bg-white/[0.04] transition-colors duration-150 rounded-xl p-3'>
-                                        <img className='w-9 h-9 rounded-full shrink-0 ring-1 ring-white/10 p-1' unoptimized src="/avatar.gif" alt="" />
+                                        <img className='w-9 h-9 rounded-full shrink-0 ring-1 ring-white/10 p-1' src="/avatar.gif" alt="" />
                                         <div className="min-w-0 flex-1">
                                             <div className="flex items-center justify-between gap-2">
                                                 <p className='text-sm font-medium break-words'>{p.name}</p>
@@ -267,11 +272,10 @@ const Paymentpage = ({ username }) => {
                                         type="button"
                                         disabled={loading}
                                         onClick={() => { setPaymentform({ ...paymentform, amount: amt }); setError("") }}
-                                        className={`flex-1 min-w-[70px] py-2.5 px-3 rounded-xl cursor-pointer text-sm font-medium transition disabled:opacity-50 disabled:cursor-not-allowed border ${
-                                            Number(paymentform.amount) === amt
+                                        className={`flex-1 min-w-[70px] py-2.5 px-3 rounded-xl cursor-pointer text-sm font-medium transition disabled:opacity-50 disabled:cursor-not-allowed border ${Number(paymentform.amount) === amt
                                                 ? "bg-amber-500 border-amber-500 text-black"
                                                 : "bg-transparent border-white/10 hover:border-white/25 text-white/80"
-                                        }`}
+                                            }`}
                                     >
                                         ₹{amt}
                                     </button>

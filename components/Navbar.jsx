@@ -13,7 +13,12 @@ const Navbar = () => {
     const navLinks = [
         { href: "/", label: "Home" },
         { href: "/about", label: "About" },
-        ...(session ? [{ href: "/dashboard", label: "Dashboard" }] : []),
+        ...(session?.user?.role === "creator" ? [
+            { href: "/dashboard", label: "Dashboard" },
+        ] : []),
+        ...(session?.user?.role === "user" ? [
+            { href: "/me", label: "My Profile" },
+        ] : []),
     ]
 
     useEffect(() => {
@@ -119,16 +124,26 @@ const Navbar = () => {
                                 <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-200/60 to-transparent" />
                                 <ul className="space-y-1 text-sm font-medium text-zinc-200">
                                     <li>
-                                        <Link href="/dashboard" onClick={() => setDropdownOpen(false)} className="group/item flex w-full items-center justify-between rounded-md px-3 py-2.5 transition-colors hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-200/45">
-                                            Dashboard
-                                            <span className="translate-x-[-4px] opacity-0 transition-all duration-200 group-hover/item:translate-x-0 group-hover/item:opacity-100">-&gt;</span>
-                                        </Link>
+                                        {session.user?.role === "creator" && (
+                                            <Link href="/dashboard" onClick={() => setDropdownOpen(false)} className="group/item flex w-full items-center justify-between rounded-md px-3 py-2.5 transition-colors hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-200/45">
+                                                Dashboard
+                                                <span className="translate-x-[-4px] opacity-0 transition-all duration-200 group-hover/item:translate-x-0 group-hover/item:opacity-100">-&gt;</span>
+                                            </Link>
+                                        )}
+                                        {session.user?.role === "user" && (
+                                            <Link href="/me" onClick={() => setDropdownOpen(false)} className="group/item flex w-full items-center justify-between rounded-md px-3 py-2.5 transition-colors hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-200/45">
+                                                My Profile
+                                                <span className="translate-x-[-4px] opacity-0 transition-all duration-200 group-hover/item:translate-x-0 group-hover/item:opacity-100">-&gt;</span>
+                                            </Link>
+                                        )}
                                     </li>
                                     <li>
-                                        <Link href={`/${session.user?.username}`} onClick={() => setDropdownOpen(false)} className="group/item flex w-full items-center justify-between rounded-md px-3 py-2.5 transition-colors hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-200/45">
-                                            Your page
-                                            <span className="translate-x-[-4px] opacity-0 transition-all duration-200 group-hover/item:translate-x-0 group-hover/item:opacity-100">-&gt;</span>
-                                        </Link>
+                                        {session.user?.role === "creator" && (
+                                            <Link href={`/${session.user?.username}`} onClick={() => setDropdownOpen(false)} className="group/item flex w-full items-center justify-between rounded-md px-3 py-2.5 transition-colors hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-200/45">
+                                                {session.user?.username} page
+                                                <span className="translate-x-[-4px] opacity-0 transition-all duration-200 group-hover/item:translate-x-0 group-hover/item:opacity-100">-&gt;</span>
+                                            </Link>
+                                        )}
                                     </li>
                                     <li className="border-t border-white/10 pt-1">
                                         <button
