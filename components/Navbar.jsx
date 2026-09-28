@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useSession, signOut } from "next-auth/react"
+import { searchCreators } from '@/actions/useraction'
 
 const Navbar = () => {
     const { data: session } = useSession()
@@ -25,7 +26,9 @@ const Navbar = () => {
         const handleScroll = () => setScrolled(window.scrollY > 8)
         handleScroll()
         window.addEventListener("scroll", handleScroll)
+        console.log(searchCreators("kar"))
         return () => window.removeEventListener("scroll", handleScroll)
+
     }, [])
 
     useEffect(() => {

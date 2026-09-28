@@ -6,7 +6,30 @@ import Payment from "@/models/payment"
 import User from "@/models/user"
 import Post from "@/models/posts"
 import { getServerSession } from "next-auth"
+import mongoose from "mongoose"
 import { authOptions } from "@/lib/authOptions"
+
+const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+
+// Creators ko username ya name se dhoondo (max 5), sirf safe fields
+export const searchCreators = async (query) => {
+    const q = (query || "").trim()
+    if (q.length < 3 || q.length > 30) return []
+
+    await dbConnect()
+
+    const regex = new RegExp(escapeRegex(q), "i")
+    const creators = await User.find({
+        role: "creator",
+        profilecompleted: true,
+        $or: [{ username: regex }, { name: regex }],
+    })
+        .select("username name profilepic")
+        .limit(5)
+        .lean()
+
+    return JSON.parse(JSON.stringify(creators))
+}
 
 // Order create + payment record create + order details client ko return
 // Errors throw nahi karte, return karte hain (production me thrown error ka message client tak nahi pahunchta)
