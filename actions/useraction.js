@@ -4,6 +4,7 @@ import Razorpay from "razorpay"
 import dbConnect from "@/db/connect"
 import Payment from "@/models/payment"
 import User from "@/models/user"
+import Post from "@/models/posts"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/authOptions"
 
@@ -103,6 +104,8 @@ export const fetchpayments = async (username) => {
         totalRaised: sumResult[0]?.sum || 0,
     }
 }
+
+
 // Dashboard ke liye: sirf apna hi profile update kar sakta hai, isliye session check
 const RESERVED = ["dashboard", "login", "signup", "api", "yourpage", "about", "notfound"]
 
@@ -144,7 +147,58 @@ export const updateprofile = async (data) => {
 
     if (newUsername !== oldUsername) {
         await Payment.updateMany({ to_user: oldUsername }, { to_user: newUsername })
+        await Post.updateMany({ creatorusername: oldUsername }, { creatorusername: newUsername })
     }
 
+    return { success: true }
+}
+
+
+// Session se email -> DB se current user (username/role kabhi stale nahi hoga)
+const getCurrentUser = async () => {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.email) return null
+    await dbConnect()
+    return User.findOne({ email: session.user.email }).select("username role").lean()
+}
+
+// Sirf creator post bana sakta hai. Caption ya image, koi ek bhi chalega
+export const createpost = async (data) => {
+    const me = await getCurrentUser()
+    if (!me) return { error: "Please login first" }
+    if (me.role !== "creator") return { error: "Only creators can create posts" }
+    if (!me.username) return { error: "Complete your profile first" }
+
+    const caption = (data?.caption || "").trim()
+    const image = (data?.image || "").trim()
+
+    if (!caption && !image) return { error: "Add a caption or an image" }
+    if (caption.length > 300) return { error: "Caption should be 300 characters or less" }
+    if (image && !/^https?:\/\//i.test(image)) return { error: "Invalid image URL" }
+
+    const post = await Post.create({ creatorusername: me.username, caption, image })
+    return { success: true, postId: String(post._id) }
+}
+
+// Public: koi bhi kisi creator ki posts dekh sakta hai
+export const fetchposts = async (username) => {
+    await dbConnect()
+
+    const posts = await Post.find({ creatorusername: username })
+        .select("caption image likecount createdAt")
+        .sort({ createdAt: -1 })
+        .lean()
+
+    return JSON.parse(JSON.stringify(posts))
+}
+
+// Sirf apni post delete hogi (ownership check query ke andar hi hai)
+export const deletepost = async (postId) => {
+    const me = await getCurrentUser()
+    if (!me) return { error: "Please login first" }
+    if (!mongoose.isValidObjectId(postId)) return { error: "Invalid post" }
+
+    const result = await Post.deleteOne({ _id: postId, creatorusername: me.username })
+    if (result.deletedCount === 0) return { error: "Post not found or not yours" }
     return { success: true }
 }
