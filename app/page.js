@@ -71,7 +71,7 @@ export default function Home() {
       <div className="m-6 mx-auto mb-16 flex flex-col items-center justify-center text-white px-6">
         <h2 className="text-2xl font-bold text-center text-white mb-4 p-4 ">Watch Our Video</h2>
 
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/tVzUXW6siu0?si=tPZfma4XHJ3BZRKa" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
+        <iframe className="w-[95%] object-contain" height="315" src="https://www.youtube.com/embed/tVzUXW6siu0?si=tPZfma4XHJ3BZRKa" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
 
       </div>
     </>
