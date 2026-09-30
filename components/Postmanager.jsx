@@ -1,8 +1,9 @@
 "use client"
-import React, { useState } from 'react'
-import { createpost, deletepost } from '@/actions/useraction'
+import React, { useState, useEffect } from 'react'
+import { createpost, deletepost, fetchtotallikes } from '@/actions/useraction'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
+
 
 const HeartIcon = ({ filled }) => (
     <svg width="18" height="18" viewBox="0 0 24 24" fill={filled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2">
@@ -10,10 +11,20 @@ const HeartIcon = ({ filled }) => (
     </svg>
 )
 
-const PostsManager = ({ posts, onPostsChange }) => {
+const PostsManager = ({ posts, onPostsChange, username }) => {
     const [caption, setCaption] = useState("")
     const [image, setImage] = useState("")
     const [submitting, setSubmitting] = useState(false)
+    const [totalLikes, setTotalLikes] = useState(0)
+
+    useEffect(() => {
+        const fetchTotalLikes = async () => {
+            const likes = await fetchtotallikes(username)
+            console.log("Total likes fetched:", likes)
+            setTotalLikes(likes)
+        }
+        fetchTotalLikes()
+    }, [])
 
     const canSubmit = (caption.trim() || image.trim()) && !submitting
 
@@ -65,7 +76,10 @@ const PostsManager = ({ posts, onPostsChange }) => {
     return (
         <div className="w-full max-w-2xl my-10 flex flex-col gap-6">
             {/* total posts of the creator */}
-            <div className="text-center text-white/80 text-lg py-1">Total posts: <span className="text-amber-400">{posts.length}</span></div>
+            <div className="totalinfo w-full *: flex flex-row justify-around mx-auto">
+                <div className="text-center text-white/80 text-lg py-1">Total posts: <span className="text-amber-400">{posts.length}</span></div>
+                <div className="text-center text-white/80 text-lg py-1">Total likes: <span className="text-amber-400">{totalLikes || 0}</span></div>
+            </div>
 
 
             {/* Create post form */}

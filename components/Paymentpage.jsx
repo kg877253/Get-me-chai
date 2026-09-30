@@ -158,7 +158,7 @@ const Paymentpage = ({ username }) => {
                         <PostsFeed posts={posts} creatorName={currentuser.name || username} creatorPic={currentuser.profilepic} />
                     )}
                     {activeTab === "your-posts" && (
-                        <PostsManager posts={posts} onPostsChange={getuser} />
+                        <PostsManager posts={posts} onPostsChange={getuser} username={username} />
                     )}
                 </div>
             </div>
