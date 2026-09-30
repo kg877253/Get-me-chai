@@ -3,9 +3,14 @@
 import React from 'react'
 import Script from 'next/script'
 import { useState, useEffect } from 'react'
-import { initiatePayment, fetchuser, fetchpayments } from '@/actions/useraction'
+import { fetchuser, fetchpayments, fetchposts } from '@/actions/useraction'
 import { toast, Bounce } from 'react-toastify'
 import { useSearchParams, useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
+import SupportersList from './Supporterlist'
+import PaymentForm from './PaymentForm'
+import PostsFeed from './Postfeed'
+import PostsManager from './Postmanager'
 
 const ShareIcon = () => (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -18,17 +23,18 @@ const Paymentpage = ({ username }) => {
     const SearchParams = useSearchParams()
     const router = useRouter()
 
-    const [paymentform, setPaymentform] = useState({ name: "", amount: "", message: "" })
     const [currentuser, setcurrentuser] = useState({})
     const [payments, setpayments] = useState([])
     const [totalSupporters, setTotalSupporters] = useState(0)
     const [totalRaised, setTotalRaised] = useState(0)
-    const [error, setError] = useState("")
-    const [loading, setLoading] = useState(false)
+    const [posts, setPosts] = useState([])
     const [mounted, setMounted] = useState(false)
     const [role, setrole] = useState()
 
-    const quickAmounts = [10, 25, 50, 100]
+    const { data: session } = useSession()
+    const [activeTab, setActiveTab] = useState("home")
+    const isOwner = session?.user?.username === username
+    const tabs = isOwner ? ["Home", "Your Posts"] : ["Home", "Support"]
 
     useEffect(() => {
         getuser();
@@ -57,6 +63,8 @@ const Paymentpage = ({ username }) => {
                 router.push("/notfound")
             }
             const data = await fetchpayments(username);
+            const postsData = await fetchposts(username)
+            setPosts(postsData)
             setpayments(data.list);
             setTotalSupporters(data.total);
             setTotalRaised(data.totalRaised);
@@ -65,68 +73,13 @@ const Paymentpage = ({ username }) => {
         }
     }
 
-    const handlechange = (e) => {
-        setError("")
-        setPaymentform({ ...paymentform, [e.target.name]: e.target.value })
-    }
-
     const copyLink = () => {
         navigator.clipboard.writeText(window.location.href)
         toast.success('Link copied to clipboard', { theme: "dark", autoClose: 2000 })
     }
 
-    const pay = async (amount) => {
-        setError("")
-
-        if (!paymentform.name.trim()) {
-            setError("Please enter your name")
-            return
-        }
-        const amt = Number(amount)
-        if (!Number.isInteger(amt) || amt < 1) {
-            setError("Please enter a valid amount (₹1 or more)")
-            return
-        }
-
-        setLoading(true)
-        try {
-            const a = await initiatePayment(amt, username, paymentform)
-
-            if (a.error) {
-                setError(a.error)
-                setLoading(false)
-                return
-            }
-
-            const options = {
-                key: a.key_id,
-                amount: a.amount,
-                currency: a.currency,
-                name: "Get me chai",
-                description: "Support the creator",
-                order_id: a.orderId,
-                callback_url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/razorpay`,
-                prefill: { name: paymentform.name },
-                notes: { address: "Get-me-chai" },
-                theme: { color: "#d97706" },
-                modal: { ondismiss: () => setLoading(false) }
-            };
-
-            const rzp1 = new window.Razorpay(options);
-            rzp1.open();
-
-        } catch (err) {
-            console.error("Payment failed:", err);
-            setError("Payment start nahi ho paayi. Dobara try karo.")
-            setLoading(false)
-        }
-    }
-
-    const topSupporterId = payments[0]?._id
-
     return (
         <>
-
             <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="afterInteractive" />
             <div className="min-h-screen bg-[#0a0a0c] text-white flex flex-col items-center">
 
@@ -177,112 +130,37 @@ const Paymentpage = ({ username }) => {
                         </div>
                     </div>
 
-                    {/* Supporters + Payment */}
-                    <div className={`grid grid-cols-1 md:grid-cols-2 my-10 md:my-16 gap-6 md:gap-8 w-full transition-all duration-700 delay-200 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}>
-
-                        <div className="bg-[#131316] border border-white/10 rounded-3xl p-6 sm:p-9">
-                            <h2 className='text-lg sm:text-xl font-semibold mb-1 tracking-tight'>
-                                Supporters
-                            </h2>
-                            <p className="text-sm text-white/40 mb-6">
-                                {totalSupporters > 10 ? `Top 10 of ${totalSupporters}` : `${totalSupporters} total`}
-                            </p>
-                            <ul className='chai-scroll overflow-auto max-h-[340px] sm:max-h-[380px] space-y-1 pr-1 -mr-1'>
-                                {payments.length === 0 && (
-                                    <li className='text-white/40 text-sm py-10 text-center'>No supporters yet. Be the first.</li>
-                                )}
-                                {payments.map((p) => (
-                                    <li key={p._id} className='flex gap-3 items-start hover:bg-white/[0.04] transition-colors duration-150 rounded-xl p-3'>
-                                        <img className='w-9 h-9 rounded-full shrink-0 ring-1 ring-white/10 p-1' src="/avatar.gif" alt="" />
-                                        <div className="min-w-0 flex-1">
-                                            <div className="flex items-center justify-between gap-2">
-                                                <p className='text-sm font-medium break-words'>{p.name}</p>
-                                                <span className="text-amber-400 text-sm font-semibold shrink-0">₹{p.amount}</span>
-                                            </div>
-                                            {p.message && (
-                                                <p className="text-xs text-white/40 break-words mt-0.5">
-                                                    "{p.message}"
-                                                </p>
-                                            )}
-                                            {p._id === topSupporterId && (
-                                                <span className="inline-block mt-1.5 text-[10px] uppercase tracking-wider text-amber-400/80 bg-amber-400/10 border border-amber-400/20 px-2 py-0.5 rounded-full">
-                                                    Top supporter
-                                                </span>
-                                            )}
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        <div className="bg-[#131316] border border-white/10 rounded-3xl p-6 sm:p-9">
-                            <h2 className='text-lg sm:text-xl font-semibold mb-1 tracking-tight'>
-                                Buy {currentuser.name || username} a chai ☕
-                            </h2>
-                            <p className="text-sm text-white/40 mb-6">Every bit helps keep the work going.</p>
-
-                            <form className='flex flex-col gap-3'>
-                                <input
-                                    name='name'
-                                    onChange={handlechange}
-                                    value={paymentform.name}
-                                    type="text"
-                                    placeholder='Your name'
-                                    className={`bg-[#0e0e10] border border-white/10 p-3 rounded-xl w-full text-sm focus:outline-none focus:border-amber-400/60 focus:ring-1 focus:ring-amber-400/30 placeholder:text-white/30 transition ${error.toLowerCase().includes("name") ? "border-red-500/60 ring-1 ring-red-500/20" : ""}`}
-                                />
-                                <input
-                                    name='amount'
-                                    onChange={handlechange}
-                                    value={paymentform.amount}
-                                    type="number"
-                                    min="1"
-                                    placeholder='Amount (₹)'
-                                    className='bg-[#0e0e10] border border-white/10 p-3 rounded-xl w-full text-sm focus:outline-none focus:border-amber-400/60 focus:ring-1 focus:ring-amber-400/30 placeholder:text-white/30 transition'
-                                />
-                                <div>
-                                    <input
-                                        name='message'
-                                        onChange={handlechange}
-                                        value={paymentform.message}
-                                        type="text"
-                                        maxLength={200}
-                                        placeholder='Say something nice (optional)'
-                                        className='bg-[#0e0e10] border border-white/10 p-3 rounded-xl w-full text-sm focus:outline-none focus:border-amber-400/60 focus:ring-1 focus:ring-amber-400/30 placeholder:text-white/30 transition'
-                                    />
-                                    <p className="text-[11px] text-white/25 text-right mt-1">{paymentform.message.length}/200</p>
-                                </div>
-
-                                {error && <p className='text-red-400 text-sm'>{error}</p>}
-
+                    <div className="flex gap-2 mt-8 border-b border-white/10 w-full max-w-md justify-center">
+                        {tabs.map((tab) => {
+                            const key = tab.toLowerCase().replace(" ", "-")
+                            return (
                                 <button
-                                    type="button"
-                                    disabled={loading}
-                                    className='w-full mt-2 bg-amber-500 hover:bg-amber-400 disabled:opacity-50 disabled:cursor-not-allowed text-black font-semibold py-3 rounded-xl cursor-pointer transition active:scale-[0.98]'
-                                    onClick={() => pay(paymentform.amount)}
+                                    key={key}
+                                    onClick={() => setActiveTab(key)}
+                                    className={`px-5 py-2.5 text-sm font-medium border-b-2 -mb-px transition cursor-pointer ${activeTab === key
+                                        ? "border-amber-400 text-white"
+                                        : "border-transparent text-white/40 hover:text-white/70"
+                                        }`}
                                 >
-                                    {loading ? "Processing..." : `Donate ${paymentform.amount ? `₹${paymentform.amount}` : ""}`}
+                                    {tab}
                                 </button>
-                            </form>
-
-                            <p className="text-xs text-white/30 mt-5 mb-2.5">Quick amount</p>
-                            <div className="flex flex-wrap gap-2">
-                                {quickAmounts.map((amt) => (
-                                    <button
-                                        key={amt}
-                                        type="button"
-                                        disabled={loading}
-                                        onClick={() => { setPaymentform({ ...paymentform, amount: amt }); setError("") }}
-                                        className={`flex-1 min-w-[70px] py-2.5 px-3 rounded-xl cursor-pointer text-sm font-medium transition disabled:opacity-50 disabled:cursor-not-allowed border ${Number(paymentform.amount) === amt
-                                                ? "bg-amber-500 border-amber-500 text-black"
-                                                : "bg-transparent border-white/10 hover:border-white/25 text-white/80"
-                                            }`}
-                                    >
-                                        ₹{amt}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
+                            )
+                        })}
                     </div>
+
+                    {/* Supporters + Payment */}
+                    {(activeTab === "home" && isOwner) || activeTab === "support" ? (
+                        <div className={`grid my-10 md:my-16 gap-6 md:gap-8 w-full transition-all duration-700 delay-200 
+                            ${isOwner ? "grid-cols-1 max-w-[60%] mx-auto" : "grid-cols-1 md:grid-cols-2"
+                            } ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}>
+                            <SupportersList payments={payments} totalSupporters={totalSupporters} />
+                            {!isOwner && <PaymentForm username={username} creatorName={currentuser.name} />}
+                        </div>
+                    ) : null}
+                    {activeTab === "home" && !isOwner && <PostsFeed posts={posts} />}
+                    {activeTab === "your-posts" && (
+                        <PostsManager posts={posts} onPostsChange={getuser} />
+                    )}
                 </div>
             </div>
         </>

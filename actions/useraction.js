@@ -8,6 +8,7 @@ import Post from "@/models/posts"
 import { getServerSession } from "next-auth"
 import mongoose from "mongoose"
 import { authOptions } from "@/lib/authOptions"
+import Like from "@/models/like"
 
 const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
 
@@ -182,7 +183,7 @@ const getCurrentUser = async () => {
     const session = await getServerSession(authOptions)
     if (!session?.user?.email) return null
     await dbConnect()
-    return User.findOne({ email: session.user.email }).select("username role").lean()
+    return User.findOne({ email: session.user.email }).select("username role email").lean()
 }
 
 // Sirf creator post bana sakta hai. Caption ya image, koi ek bhi chalega
@@ -224,4 +225,41 @@ export const deletepost = async (postId) => {
     const result = await Post.deleteOne({ _id: postId, creatorusername: me.username })
     if (result.deletedCount === 0) return { error: "Post not found or not yours" }
     return { success: true }
+}
+
+// Login zaroori. Already like hai to unlike, warna like — ek hi function se dono
+export const togglelike = async (postId) => {
+    const me = await getCurrentUser()
+    if (!me) return { error: "Please login first" }
+    if (!mongoose.isValidObjectId(postId)) return { error: "Invalid post" }
+
+    const existing = await Like.findOne({ postId, userEmail: me.email })
+
+    if (existing) {
+        await Like.deleteOne({ _id: existing._id })
+        await Post.findByIdAndUpdate(postId, { $inc: { likecount: -1 } })
+        return { success: true, liked: false }
+    }
+
+    try {
+        await Like.create({ postId, userEmail: me.email })
+        await Post.findByIdAndUpdate(postId, { $inc: { likecount: 1 } })
+        return { success: true, liked: true }
+    } catch (err) {
+        // Race condition: dusri request ne already like kar diya
+        if (err.code === 11000) return { error: "Already liked" }
+        return { error: "Could not like post" }
+    }
+}
+
+// Public feed ke liye: current user ne kaunsi posts like ki hain (highlight ke liye)
+export const fetchmylikes = async (postIds) => {
+    const me = await getCurrentUser()
+    if (!me) return []
+
+    await dbConnect()
+    const likes = await Like.find({ postId: { $in: postIds }, userEmail: me.email })
+        .select("postId").lean()
+
+    return likes.map((l) => String(l.postId))
 }
