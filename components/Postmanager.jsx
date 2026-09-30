@@ -2,6 +2,7 @@
 import React, { useState } from 'react'
 import { createpost, deletepost } from '@/actions/useraction'
 import { toast } from 'react-toastify'
+import Swal from 'sweetalert2'
 
 const HeartIcon = ({ filled }) => (
     <svg width="18" height="18" viewBox="0 0 24 24" fill={filled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2">
@@ -37,7 +38,20 @@ const PostsManager = ({ posts, onPostsChange }) => {
     }
 
     const handleDelete = async (postId) => {
-        if (!window.confirm("Delete this post?")) return
+        const result = await Swal.fire({
+            title: "Delete this post?",
+            text: "This can't be undone.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Delete",
+            cancelButtonText: "Cancel",
+            confirmButtonColor: "#ef4444",
+            cancelButtonColor: "#3f3f46",
+            background: "#131316",
+            color: "#fff",
+        })
+
+        if (!result.isConfirmed) return
 
         const res = await deletepost(postId)
         if (res.error) {
@@ -50,6 +64,9 @@ const PostsManager = ({ posts, onPostsChange }) => {
 
     return (
         <div className="w-full max-w-2xl my-10 flex flex-col gap-6">
+            {/* total posts of the creator */}
+            <div className="text-center text-white/80 text-lg py-1">Total posts: <span className="text-amber-400">{posts.length}</span></div>
+
 
             {/* Create post form */}
             <form onSubmit={handleSubmit} className="bg-[#131316] border border-white/10 rounded-2xl p-5 sm:p-6 flex flex-col gap-3">
@@ -67,7 +84,7 @@ const PostsManager = ({ posts, onPostsChange }) => {
                         src={image}
                         alt=""
                         onError={(e) => { e.target.style.display = "none" }}
-                        className="w-full max-h-52 object-cover rounded-xl border border-white/10"
+                        className="w-full max-h-76 object-contain rounded-xl border border-white/10"
                     />
                 )}
 

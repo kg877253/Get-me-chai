@@ -24,6 +24,7 @@ const PostCard = ({ post, creatorName, creatorPic, isLiked, likeCount, canLike, 
     const [imgFailed, setImgFailed] = useState(false)
     const [pop, setPop] = useState(false)
     const [burst, setBurst] = useState(false)
+    const [avatarFailed, setAvatarFailed] = useState(false)
 
     const handleDoubleTap = () => {
         setBurst(true)
@@ -48,11 +49,16 @@ const PostCard = ({ post, creatorName, creatorPic, isLiked, likeCount, canLike, 
 
             {/* Header */}
             <div className="flex items-center gap-3 px-4 sm:px-5 py-3.5">
-                {creatorPic ? (
-                    <img src={creatorPic} alt="" className="size-9 rounded-full object-cover ring-1 ring-white/10 shrink-0" />
+                {creatorPic && !avatarFailed ? (
+                    <img
+                        src={creatorPic}
+                        alt=""
+                        onError={() => setAvatarFailed(true)}
+                        className="size-9 rounded-full object-cover ring-1 ring-white/10 shrink-0"
+                    />
                 ) : (
                     <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-amber-400/15 text-sm font-bold text-amber-300 ring-1 ring-white/10">
-                        {(creatorName || "?").charAt(0).toUpperCase()}
+                        {(creatorName || "U").charAt(0).toUpperCase()}
                     </span>
                 )}
                 <div className="min-w-0">
@@ -73,9 +79,8 @@ const PostCard = ({ post, creatorName, creatorPic, isLiked, likeCount, canLike, 
                         alt=""
                         onLoad={() => setImgLoaded(true)}
                         onError={() => setImgFailed(true)}
-                        className={`w-full max-h-[560px] object-cover cursor-pointer transition-opacity duration-500 ${
-                            imgLoaded ? "opacity-100 block" : "opacity-0 absolute inset-0"
-                        }`}
+                        className={`w-full max-h-[560px] object-contain cursor-pointer transition-opacity duration-500 ${imgLoaded ? "opacity-100 block" : "opacity-0 absolute inset-0"
+                            }`}
                     />
                     {/* Double-tap heart burst */}
                     {burst && (
@@ -102,11 +107,10 @@ const PostCard = ({ post, creatorName, creatorPic, isLiked, likeCount, canLike, 
                 <button
                     onClick={handleLikeClick}
                     title={canLike ? "" : "Login to like"}
-                    className={`group flex items-center gap-2 rounded-full pl-1.5 pr-3.5 py-1.5 -ml-1.5 text-sm font-medium transition-all cursor-pointer active:scale-90 ${
-                        isLiked
+                    className={`group flex items-center gap-2 rounded-full pl-1.5 pr-3.5 py-1.5 -ml-1.5 text-sm font-medium transition-all cursor-pointer active:scale-90 ${isLiked
                             ? "text-red-400 bg-red-400/10"
                             : "text-white/50 hover:text-red-400 hover:bg-red-400/[0.06]"
-                    }`}
+                        }`}
                 >
                     <span className={`inline-flex transition-transform duration-300 ${pop ? "scale-125" : "scale-100"} group-hover:scale-110`}>
                         <HeartIcon filled={isLiked} />

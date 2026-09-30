@@ -157,7 +157,9 @@ const Paymentpage = ({ username }) => {
                             {!isOwner && <PaymentForm username={username} creatorName={currentuser.name} />}
                         </div>
                     ) : null}
-                    {activeTab === "home" && !isOwner && <PostsFeed posts={posts} />}
+                    {activeTab === "home" && !isOwner && (
+                        <PostsFeed posts={posts} creatorName={currentuser.name || username} creatorPic={currentuser.profilepic} />
+                    )}
                     {activeTab === "your-posts" && (
                         <PostsManager posts={posts} onPostsChange={getuser} />
                     )}
