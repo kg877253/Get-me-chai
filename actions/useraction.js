@@ -22,7 +22,6 @@ export const searchCreators = async (query) => {
     const regex = new RegExp(escapeRegex(q), "i")
     const creators = await User.find({
         role: "creator",
-        profilecompleted: true,
         $or: [{ username: regex }, { name: regex }],
     })
         .select("username name profilepic")
@@ -156,6 +155,10 @@ export const updateprofile = async (data) => {
         if (taken) return { error: "Username already exists" }
     }
 
+    if (!f.name?.trim()) return { error: "Name is required" }
+    if (f.profilepic && !/^https?:\/\//i.test(f.profilepic)) return { error: "Invalid profile picture URL" }
+    if (f.coverpic && !/^https?:\/\//i.test(f.coverpic)) return { error: "Invalid cover picture URL" }
+
     const updates = {
         name: f.name,
         username: newUsername,
@@ -174,7 +177,7 @@ export const updateprofile = async (data) => {
         await Post.updateMany({ creatorusername: oldUsername }, { creatorusername: newUsername })
     }
 
-    return { success: true }
+    return { success: true, profilecompleted: updates.profilecompleted }
 }
 
 
@@ -262,4 +265,34 @@ export const fetchmylikes = async (postIds) => {
         .select("postId").lean()
 
     return likes.map((l) => String(l.postId))
+}
+
+
+// Fans ko apni profile me pta chlega kis kis creator ko like kiya hai, aur kitni posts pr kiya hai
+export const fetchmylikedcreators = async () => {
+    const me = await getCurrentUser()
+    if (!me) return []
+
+    await dbConnect()
+
+    const data = await Like.aggregate([
+        { $match: { userEmail: me.email } },
+        { $lookup: { from: "posts", localField: "postId", foreignField: "_id", as: "post" } },
+        { $unwind: "$post" },
+        { $group: { _id: "$post.creatorusername", postsLiked: { $sum: 1 } } },
+        { $lookup: { from: "users", localField: "_id", foreignField: "username", as: "creator" } },
+        { $unwind: "$creator" },
+        {
+            $project: {
+                _id: 0,
+                username: "$_id",
+                postsLiked: 1,
+                name: "$creator.name",
+                profilepic: "$creator.profilepic",
+            },
+        },
+        { $sort: { postsLiked: -1 } },
+    ])
+
+    return JSON.parse(JSON.stringify(data))
 }

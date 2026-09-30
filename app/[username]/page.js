@@ -1,6 +1,5 @@
 import React from 'react'
 import Paymentpage from '../../components/Paymentpage'
-import { notFound } from 'next/navigation'
 import { fetchuser } from '@/actions/useraction'
 import Notfoundpage from '../notfound/page';
 
@@ -17,17 +16,13 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function Username({ params }) {
-  // Await the params Promise to access its properties
   const { username } = await params;
   const user = await fetchuser(username);
-  //Agar user nahi mila to 404 page dikhao
-  if (user.error === "User not found") {
+
+  // Creator nahi mila, ya role creator nahi hai (fan/user ka koi public page nahi)
+  if (user.error || user.role !== "creator") {
     return <Notfoundpage />;
   }
 
-  else {
-    return <>
-      {<Paymentpage key={username} username={username} />}
-    </>
-  }
+  return <Paymentpage key={username} username={username} />;
 }

@@ -67,7 +67,7 @@ const Dashboard = () => {
         await update()
         setSavedpic(formData.get("profilepic"))
         toast.success('Profile updated successfully')
-        if (form.username && form.name && form.razorpayid) setprofiledone(true)
+        setprofiledone(res.profilecompleted === true)   // server se aaya hua truth
     }
 
     useEffect(() => {

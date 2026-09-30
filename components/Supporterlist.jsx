@@ -1,7 +1,10 @@
 import React from 'react'
+import { useSession } from 'next-auth/react'
 
 const SupportersList = ({ payments, totalSupporters }) => {
     const topSupporterId = payments[0]?._id
+    const { data: session } = useSession()
+    const isCreator = session?.user?.role === "creator"
 
     return (
         <div className="bg-[#131316] border border-white/10 rounded-3xl p-6 sm:p-9">
@@ -13,7 +16,9 @@ const SupportersList = ({ payments, totalSupporters }) => {
             </p>
             <ul className='chai-scroll overflow-auto max-h-[340px] sm:max-h-[380px] space-y-1 pr-1 -mr-1'>
                 {payments.length === 0 && (
-                    <li className='text-white/40 text-sm py-10 text-center'>No supporters yet. Be the first.</li>
+                    <li className="text-white/40 text-sm text-center py-10">
+                        {isCreator ? "No supporters yet." : "No supporters yet. Support this creator to see your name here!"}
+                    </li>
                 )}
                 {payments.map((p) => (
                     <li key={p._id} className='flex gap-3 items-start hover:bg-white/[0.04] transition-colors duration-150 rounded-xl p-3'>

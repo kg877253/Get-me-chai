@@ -59,9 +59,6 @@ const Paymentpage = ({ username }) => {
             const user = await fetchuser(username);
             setcurrentuser(user);
             setrole(user.role);
-            if (user.role === "user") {
-                router.push("/notfound")
-            }
             const data = await fetchpayments(username);
             const postsData = await fetchposts(username)
             setPosts(postsData)
