@@ -227,6 +227,10 @@ export const deletepost = async (postId) => {
 
     const result = await Post.deleteOne({ _id: postId, creatorusername: me.username })
     if (result.deletedCount === 0) return { error: "Post not found or not yours" }
+    await Like.deleteMany({
+        postId
+    })
+
     return { success: true }
 }
 

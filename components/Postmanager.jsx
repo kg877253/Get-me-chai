@@ -24,7 +24,7 @@ const PostsManager = ({ posts, onPostsChange, username }) => {
             setTotalLikes(likes)
         }
         fetchTotalLikes()
-    }, [])
+    }, [username, posts]) // Re-fetch total likes whenever username or posts change
 
     const canSubmit = (caption.trim() || image.trim()) && !submitting
 
