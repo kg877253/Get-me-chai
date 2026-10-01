@@ -7,10 +7,9 @@ import { searchCreators } from "@/actions/useraction"
 const MIN_CHARS = 2
 
 const SearchBar = () => {
-    
+
     const router = useRouter()
     const wrapperRef = useRef(null)
-
     const [query, setQuery] = useState("")
     const [results, setResults] = useState([])
     const [loading, setLoading] = useState(false)
