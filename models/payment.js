@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 
-const PaymentSchema = new mongoose.Schema(
-  {
+const PaymentSchema = new mongoose.Schema({
     // supporter ka naam
     name: {
       type: String,
@@ -9,7 +8,6 @@ const PaymentSchema = new mongoose.Schema(
       trim: true,
       maxlength: 50,
     },
-
     // creator ka username (User.username)
     to_user: {
       type: String,
