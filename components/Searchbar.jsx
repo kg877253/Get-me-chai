@@ -7,6 +7,7 @@ import { searchCreators } from "@/actions/useraction"
 const MIN_CHARS = 2
 
 const SearchBar = () => {
+    
     const router = useRouter()
     const wrapperRef = useRef(null)
 
