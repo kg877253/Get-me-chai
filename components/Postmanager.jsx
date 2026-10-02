@@ -1,6 +1,6 @@
 "use client"
-import React, { useState, useEffect } from 'react'
-import { createpost, deletepost, fetchtotallikes } from '@/actions/useraction'
+import React, { useState } from 'react'
+import { createpost, deletepost } from '@/actions/useraction'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 
@@ -15,18 +15,8 @@ const PostsManager = ({ posts, onPostsChange, username }) => {
     const [caption, setCaption] = useState("")
     const [image, setImage] = useState("")
     const [submitting, setSubmitting] = useState(false)
-    const [totalLikes, setTotalLikes] = useState(0)
-
-    useEffect(() => {
-        const fetchTotalLikes = async () => {
-            const likes = await fetchtotallikes(username)
-            console.log("Total likes fetched:", likes)
-            setTotalLikes(likes)
-        }
-        fetchTotalLikes()
-    }, [username, posts]) // Re-fetch total likes whenever username or posts change
-
     const canSubmit = (caption.trim() || image.trim()) && !submitting
+    const totalLikes = posts.reduce((sum, p) => sum + (p.likecount || 0), 0)
 
     const handleSubmit = async (e) => {
         e.preventDefault()
