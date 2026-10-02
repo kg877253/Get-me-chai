@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { fetchuser, updateprofile, fetchpayments } from '@/actions/useraction'
+import { fetchuser, updateprofile, fetchpayments, fetchearningsgraph } from '@/actions/useraction'
 import { toast } from 'react-toastify'
 
 const Dashboard = () => {
@@ -40,6 +40,8 @@ const Dashboard = () => {
 
     const getuser = async () => {
         const user = await fetchuser(session.user.username)
+        const graphdata = await fetchearningsgraph("kartk_gupta_")
+        console.log("Graph Data:", graphdata)
         if (user.error) return
         setform({
             ...form,

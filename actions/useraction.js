@@ -314,3 +314,58 @@ export const fetchtotallikes = async (username) => {
     ])
     return totalLikes[0]?.totalLikes || 0
 }
+
+// Creator ki total posts aur un sabka combined likes count
+export const fetchpoststats = async (username) => {
+    await dbConnect()
+
+    const result = await Post.aggregate([
+        { $match: { creatorusername: username } },
+        {
+            $group: {
+                _id: null,
+                totalPosts: { $sum: 1 },
+                totalLikes: { $sum: "$likecount" },
+            },
+        },
+    ])
+
+    return {
+        totalPosts: result[0]?.totalPosts || 0,
+        totalLikes: result[0]?.totalLikes || 0,
+    }
+}
+
+// Last 30 din ka daily earnings, graph ke liye. Missing din ₹0 se fill hote hain
+export const fetchearningsgraph = async (username) => {
+    await dbConnect()
+
+    const since = new Date()
+    since.setUTCHours(0, 0, 0, 0)
+    since.setUTCDate(since.getUTCDate() - 29)
+
+    const raw = await Payment.aggregate([
+        { $match: { to_user: username, done: true, createdAt: { $gte: since } } },
+        {
+            $group: {
+                _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+                total: { $sum: "$amount" },
+            },
+        },
+    ])
+
+    const map = Object.fromEntries(raw.map((r) => [r._id, r.total]))
+
+    const result = []
+    for (let i = 0; i < 30; i++) {
+        const d = new Date(since)
+        d.setUTCDate(d.getUTCDate() + i)
+        const key = d.toISOString().slice(0, 10)
+        result.push({
+            date: d.toLocaleDateString("en-IN", { day: "numeric", month: "short", timeZone: "UTC" }),
+            amount: map[key] || 0,
+        })
+    }
+
+    return result
+}
