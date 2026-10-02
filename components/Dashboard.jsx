@@ -18,6 +18,7 @@ const Dashboard = () => {
     const [form, setform] = useState({
         name: "", username: "", profilepic: "", coverpic: "", razorpayid: "", razorpaysecret: "",
     })
+    
     const [payments, setPayments] = useState({ totalRaised: 0, total: 0 })
     const [postStats, setPostStats] = useState({ totalPosts: 0, totalLikes: 0 })
     const [graphData, setGraphData] = useState([])
