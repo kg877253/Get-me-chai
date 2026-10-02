@@ -3,6 +3,7 @@ import React from 'react'
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'
 
 const StatCard = ({ label, value, icon, color }) => (
+    
     <div className="bg-[#111826] border border-white/10 rounded-2xl p-5 flex items-center gap-4 transition hover:border-white/20 hover:-translate-y-0.5 duration-200">
         <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${color} hover:-translate-y-1 transition duration-200`}>
             {icon}
