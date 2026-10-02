@@ -11,7 +11,7 @@ const checklistItems = (form) => [
 
 const StatCard = ({ label, value, icon, color }) => (
 
-    <div className="bg-[#111826] border border-white/10 rounded-2xl p-5 flex items-center gap-4 transition hover:border-white/20 hover:-translate-y-0.5 duration-200">
+    <div className="bg-[#111826] border border-white/10 rounded-2xl p-5 flex items-center gap-4 transition hover:border-white/20 hover:-translate-y-1 duration-300">
         <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${color}`}>
             {icon}
         </div>
@@ -20,7 +20,7 @@ const StatCard = ({ label, value, icon, color }) => (
             <p className="text-gray-400 text-xs mt-1">{label}</p>
         </div>
     </div>
-    
+
 )
 
 const DashboardOverview = ({ form, savedpic, email, postStats, username,onOpenEdit }) => {
@@ -78,8 +78,7 @@ const DashboardOverview = ({ form, savedpic, email, postStats, username,onOpenEd
 
             {/* Right: checklist */}
             <div
-                onClick={onOpenEdit}
-                className="bg-[#111826] border border-white/10 rounded-2xl p-6 flex flex-col cursor-pointer transition hover:border-amber-400/30 hover:bg-[#131d2e]"
+                className="bg-[#111826] border border-white/10 rounded-2xl p-5 flex flex-col transition hover:border-amber-400/30 "
             >
                 <div className="flex items-center justify-between mb-1">
                     <p className="text-sm font-semibold text-white/90">Profile strength</p>
@@ -110,9 +109,9 @@ const DashboardOverview = ({ form, savedpic, email, postStats, username,onOpenEd
                 </ul>
 
                 {percent < 100 && (
-                    <p className="text-xs text-white/30 mt-5 pt-4 border-t border-white/10">
-                        Complete profile edit karne ke liye "Edit Settings" use karo
-                    </p>
+                    <button onClick={onOpenEdit} className="mt-10 border-2 p-1 border-amber-400/30 rounded-3xl text-sm font-semibold cursor-pointer text-amber-400 hover:text-amber-300 hover:bg-amber-400/10 hover:border-amber-400/50 transition-colors">
+                        Edit Profile
+                    </button>
                 )}
             </div>
         </div>
