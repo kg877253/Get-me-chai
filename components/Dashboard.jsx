@@ -2,8 +2,11 @@
 import React, { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { fetchuser, updateprofile, fetchpayments, fetchearningsgraph } from '@/actions/useraction'
+import { fetchuser, updateprofile, fetchpayments, fetchpoststats, fetchearningsgraph } from '@/actions/useraction'
 import { toast } from 'react-toastify'
+import DashboardOverview from './DashboardOverview'
+import DashboardEarnings from './DashboardEarnings'
+import EditProfileDrawer from './EditProfileDrawer'
 
 const Dashboard = () => {
     const inputClass = "w-full bg-[#1a2333] border border-white/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/60 focus:border-blue-500/60 placeholder:text-gray-500 transition"
@@ -13,20 +16,15 @@ const Dashboard = () => {
     const router = useRouter()
 
     const [form, setform] = useState({
-        name: "",
-        username: "",
-        profilepic: "",
-        coverpic: "",
-        razorpayid: "",
-        razorpaysecret: "",
+        name: "", username: "", profilepic: "", coverpic: "", razorpayid: "", razorpaysecret: "",
     })
-    const [payments, setPayments] = useState({
-        totalRaised: 0,
-        total: 0
-    })
-
+    const [payments, setPayments] = useState({ totalRaised: 0, total: 0 })
+    const [postStats, setPostStats] = useState({ totalPosts: 0, totalLikes: 0 })
+    const [graphData, setGraphData] = useState([])
+    const [drawerOpen, setDrawerOpen] = useState(false)
     const [savedpic, setSavedpic] = useState("")
     const [profiledone, setprofiledone] = useState(false)
+    const [activeTab, setActiveTab] = useState("overview")
 
     useEffect(() => {
         if (status === "unauthenticated") {
@@ -40,11 +38,8 @@ const Dashboard = () => {
 
     const getuser = async () => {
         const user = await fetchuser(session.user.username)
-        const graphdata = await fetchearningsgraph("kartk_gupta_")
-        console.log("Graph Data:", graphdata)
         if (user.error) return
         setform({
-            ...form,
             name: user.name || "",
             username: user.username || "",
             profilepic: user.profilepic || "",
@@ -67,73 +62,82 @@ const Dashboard = () => {
             return
         }
         await update()
+        setform({ ...form, ...Object.fromEntries(formData) })
         setSavedpic(formData.get("profilepic"))
         toast.success('Profile updated successfully')
-        setprofiledone(res.profilecompleted === true)   // server se aaya hua truth
+        setprofiledone(res.profilecompleted === true)
     }
 
+    // Tabs ka data, sirf jab profile complete ho chuki ho tab load karo
     useEffect(() => {
-        if (session?.user?.username) {
-            const getPayments = async () => {
-                const data = await fetchpayments(session.user.username)
-                setPayments(data)
-            }
+        if (!session?.user?.username || !profiledone) return
 
-            getPayments()
+        const loadDashboardData = async () => {
+            const [paymentsData, stats, graph] = await Promise.all([
+                fetchpayments(session.user.username),
+                fetchpoststats(session.user.username),
+                fetchearningsgraph(session.user.username),
+            ])
+            setPayments(paymentsData)
+            setPostStats(stats)
+            setGraphData(graph)
         }
-    }, [session])
-
-    const totalraised = payments.totalRaised
-    const supporters = payments.total
+        loadDashboardData()
+    }, [session, profiledone])
 
     if (status === "loading") return <p className="text-white text-center mt-20">Loading...</p>
 
     return (
         <>
             {profiledone && (
-                
-                <div className="flex justify-center px-4 py-12 bg-[#0a0e17] min-h-[75vh] max-h-[90vh] text-white">
-                    <div className="w-full max-w-xl bg-[#111826] border border-white/10 rounded-2xl p-8 shadow-lg">
+                <div className="min-h-[85vh] bg-[#0a0e17] text-white px-4 py-10">
+                    <div className="max-w-4xl mx-auto">
 
-                        <div className="flex flex-col items-center mb-8">
-                            <div className="w-20 h-20 rounded-full bg-gray-700 flex items-center justify-center border border-white/10 overflow-hidden mb-4">
-                                {savedpic
-                                    ? <img src={savedpic} alt="profile" className="w-full h-full object-cover " />
-                                    : <span className="text-2xl">👤</span>}
-                            </div>
-                            <h1 className="text-2xl font-bold text-amber-100">{form.name}</h1>
-                            <p className="text-gray-400 text-sm">@{form.username}</p>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4 mb-8">
-                            <div className="bg-[#1a2333] border border-white/10 rounded-xl p-4 text-center">
-                                <p className="text-gray-400 text-xs mb-1">Total Raised</p>
-                                <p className="text-xl font-bold text-green-400">₹{totalraised}</p>
-                            </div>
-                            <div className="bg-[#1a2333] border border-white/10 rounded-xl p-4 text-center">
-                                <p className="text-gray-400 text-xs mb-1">Supporters</p>
-                                <p className="text-xl font-bold text-blue-500">{supporters}</p>
-                            </div>
+                        {/* Tabs */}
+                        <div className="flex gap-2 border-b border-white/10 mb-8">
+                            {["overview", "earnings"].map((tab) => (
+                                <button
+                                    key={tab}
+                                    onClick={() => setActiveTab(tab)}
+                                    className={`px-5 py-2.5 text-sm font-medium capitalize border-b-2 -mb-px transition cursor-pointer ${activeTab === tab
+                                        ? "border-amber-400 text-white"
+                                        : "border-transparent text-white/40 hover:text-white/70"
+                                        }`}
+                                >
+                                    {tab}
+                                </button>
+                            ))}
                         </div>
 
-                        <div className="space-y-3 mb-8">
-                            <a href={`/${form.username}`} target="_blank" className="block text-center bg-blue-600 hover:bg-blue-700 transition py-2.5 rounded-lg font-semibold">
-                                View My Page
-                            </a>
-                            <button onClick={() => setprofiledone(false)} className="w-full text-center bg-white/5 hover:bg-white/10 border border-white/10 transition py-2.5 rounded-lg font-medium cursor-pointer">
-                                Edit Settings
-                            </button>
-                        </div>
+                        {activeTab === "overview" && (
+                            <DashboardOverview
+                                form={form}
+                                savedpic={savedpic}
+                                email={session?.user?.email}
+                                postStats={postStats}
+                                username={session?.user?.username}
+                                onOpenEdit={() => setDrawerOpen(true)}
+                            />
+                        )}
 
-                        <div className="pt-4 border-t border-white/10 text-sm text-gray-400 space-y-1">
-                            <p>Email:  {session.user.email}</p>
-                        </div>
-                        <div className="pt-4 border-t border-white/10 text-sm text-gray-400 space-y-1">
-                            <p>Payment Method: Razorpay</p>
-                        </div>
+                        {activeTab === "earnings" && (
+                            <DashboardEarnings
+                                totalRaised={payments.totalRaised}
+                                totalSupporters={payments.total}
+                                graphData={graphData}
+                            />
+                        )}
                     </div>
+                    <EditProfileDrawer
+                        open={drawerOpen}
+                        form={form}
+                        onClose={() => setDrawerOpen(false)}
+                        onSave={handlesubmit}
+                    />
                 </div>
+
             )}
+
             {!profiledone && (
                 <div className="flex justify-center px-4 py-12 bg-[#0a0e17] min-h-screen text-white">
                     <form className="w-full max-w-xl bg-[#111826] border border-white/10 rounded-2xl p-8 shadow-lg" action={handlesubmit}>
@@ -189,7 +193,6 @@ const Dashboard = () => {
                     </form>
                 </div>
             )}
-
         </>
     )
 }

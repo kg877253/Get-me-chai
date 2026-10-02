@@ -301,20 +301,6 @@ export const fetchmylikedcreators = async () => {
     return JSON.parse(JSON.stringify(data))
 }
 
-//total likes of particular creator
-export const fetchtotallikes = async (username) => {
-    await dbConnect()
-    const totalLikes = await Like.aggregate([
-        {
-            $lookup: { from: "posts", localField: "postId", foreignField: "_id", as: "post" },
-        },
-        { $unwind: "$post" },
-        { $match: { "post.creatorusername": username } },
-        { $count: "totalLikes" },
-    ])
-    return totalLikes[0]?.totalLikes || 0
-}
-
 // Creator ki total posts aur un sabka combined likes count
 export const fetchpoststats = async (username) => {
     await dbConnect()
