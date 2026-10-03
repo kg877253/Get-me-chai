@@ -69,14 +69,3 @@ Don't share these values and don't push `.env.local` to GitHub. Also save `ENCRY
 
 For testing, use Razorpay test mode keys so no real money is used.
 
-## Things I want to add
-
-- Image upload (right now you add an image link)
-- Paid memberships
-- Email after a payment
-
-## About me
-
-I'm Kartik, a B.Sc. Computer Science student at Delhi University. I'm learning to become a MERN full stack developer, and this is one of my main projects.
-
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-%230077B5.svg?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/kartikgupta8/) [![Email](https://img.shields.io/badge/Email-D14836?logo=gmail&logoColor=white)](mailto:kg877253@gmail.com)
