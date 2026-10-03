@@ -7,6 +7,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
   const footerLinks = [
     { href: "/", label: "Home" },
+    { href: "/explore", label: "Explore" },
     { href: "/about", label: "About" },
     { href: "/login", label: "Login" },
   ]
@@ -20,7 +21,7 @@ const Footer = () => {
   return (
     <footer
       onPointerMove={handlePointerMove}
-      className="group/footer relative overflow-hidden border-t border-white/10 bg-[#020817]/90 text-white"
+      className="group/footer relative overflow-hidden border-t border-white/10 bg-[#020817]/90 px-3 text-white"
       style={{ "--x": "50%", "--y": "50%" }}
     >
       <div
@@ -29,10 +30,10 @@ const Footer = () => {
       />
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-200/50 to-transparent" />
 
-      <div className="relative mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
+      <div className="relative mx-auto w-full max-w-6xl py-6">
         <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
           <div className="max-w-md">
-            <Link href="/" className="group/brand inline-flex items-center gap-3 rounded-md px-1 py-1 transition-colors hover:bg-white/5">
+            <Link href="/" className="group/brand inline-flex items-center gap-3 rounded-md px-2 py-1 transition-colors hover:bg-white/5">
               <span className="relative flex size-11 items-center justify-center rounded-lg border border-white/15 bg-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_10px_25px_rgba(0,0,0,0.25)] transition-transform duration-300 group-hover/brand:-rotate-3 group-hover/brand:scale-105">
                 <span className="absolute inset-0 rounded-lg bg-gradient-to-br from-amber-300/20 via-transparent to-emerald-300/10 opacity-0 transition-opacity duration-300 group-hover/brand:opacity-100" />
                 <Image src="/chai.gif" unoptimized alt="Logo" width={32} height={32} className="relative" />

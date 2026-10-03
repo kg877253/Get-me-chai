@@ -13,6 +13,7 @@ const Navbar = () => {
 
     const navLinks = [
         { href: "/", label: "Home" },
+        { href: "/explore", label: "Explore" },
         { href: "/about", label: "About" },
         ...(session?.user?.role === "creator" ? [
             { href: "/dashboard", label: "Dashboard" },

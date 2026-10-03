@@ -9,6 +9,7 @@ import { getServerSession } from "next-auth"
 import mongoose from "mongoose"
 import { authOptions } from "@/lib/authOptions"
 import Like from "@/models/like"
+import { encrypt, decrypt } from "@/lib/crypto"
 
 const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
 
@@ -56,10 +57,16 @@ export const initiatePayment = async (amount, to_username, paymentform) => {
         return { error: "This creator has not set up payments yet" }
     }
 
-    const razorpay = new Razorpay({
-        key_id: creator.razorpayid,
-        key_secret: creator.razorpaysecret,
-    })
+    let razorpay
+    try {
+        razorpay = new Razorpay({
+            key_id: creator.razorpayid,
+            key_secret: decrypt(creator.razorpaysecret),
+        })
+    } catch (err) {
+        console.error("Secret decrypt error:", err)
+        return { error: "Payment setup error. Please try again later." }
+    }
 
     // ab Razorpay order + DB record 
     let order
@@ -130,7 +137,7 @@ export const fetchpayments = async (username) => {
 
 
 // Dashboard ke liye: sirf apna hi profile update kar sakta hai, isliye session check
-const RESERVED = ["dashboard", "login", "signup", "api", "yourpage", "about", "notfound"]
+const RESERVED = ["dashboard", "login", "signup", "api", "yourpage", "about", "notfound", "explore", "me"]
 
 export const updateprofile = async (data) => {
     const session = await getServerSession(authOptions)
@@ -167,7 +174,7 @@ export const updateprofile = async (data) => {
         profilecompleted: Boolean(newUsername && f.name && (f.razorpayid || me.razorpayid)),
     }
     if (f.razorpayid) updates.razorpayid = f.razorpayid
-    if (f.razorpaysecret) updates.razorpaysecret = f.razorpaysecret
+    if (f.razorpaysecret) updates.razorpaysecret = encrypt(f.razorpaysecret.trim())
 
     const oldUsername = me.username
     await User.findOneAndUpdate({ email: session.user.email }, updates)
@@ -354,4 +361,39 @@ export const fetchearningsgraph = async (username) => {
     }
 
     return result
+}
+
+// Explore page: saare completed creators, total raised ke hisaab se sorted
+export const fetchexplorecreators = async () => {
+    await dbConnect()
+
+    const creators = await User.aggregate([
+        { $match: { role: "creator", profilecompleted: true } },
+        {
+            $lookup: {
+                from: "payments",
+                let: { uname: "$username" },
+                pipeline: [
+                    { $match: { $expr: { $and: [{ $eq: ["$to_user", "$$uname"] }, { $eq: ["$done", true] }] } } },
+                    { $group: { _id: null, total: { $sum: "$amount" }, count: { $sum: 1 } } },
+                ],
+                as: "stats",
+            },
+        },
+        {
+            $project: {
+                _id: 0,
+                username: 1,
+                name: 1,
+                profilepic: 1,
+                coverpic: 1,
+                totalRaised: { $ifNull: [{ $arrayElemAt: ["$stats.total", 0] }, 0] },
+                supporters: { $ifNull: [{ $arrayElemAt: ["$stats.count", 0] }, 0] },
+            },
+        },
+        { $sort: { totalRaised: -1 } },
+        { $limit: 50 },
+    ])
+
+    return JSON.parse(JSON.stringify(creators))
 }

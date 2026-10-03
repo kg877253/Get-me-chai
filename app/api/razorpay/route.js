@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import Payment from "@/models/payment";
 import User from "@/models/user";
+import { decrypt } from "@/lib/crypto";
 import { validatePaymentVerification } from "razorpay/dist/utils/razorpay-utils";
 import dbConnect from "@/db/connect";
 
@@ -16,9 +17,16 @@ export const POST = async (req) => {
 
     // 2. creator ka secret nikalo (username payment record se aata hai)
     const user = await User.findOne({ username: payment.to_user });
-    const secret = user?.razorpaysecret;
-    if (!secret) {
+    if (!user?.razorpaysecret) {
         return NextResponse.json({ error: "Creator has not set Razorpay secret" }, { status: 400 });
+    }
+
+    let secret;
+    try {
+        secret = decrypt(user.razorpaysecret);
+    } catch (err) {
+        console.error("Secret decrypt error:", err);
+        return NextResponse.json({ error: "Verification setup error" }, { status: 500 });
     }
 
     // 3. signature verify
