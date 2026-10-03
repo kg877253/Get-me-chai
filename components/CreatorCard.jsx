@@ -51,8 +51,7 @@ const CreatorCard = ({ creator, index }) => {
                         src={creator.coverpic}
                         alt=""
                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                )}
+                    />)}
 
                 {index < 3 && (
                     <span className="absolute right-2 top-2 rounded-full bg-amber-500 px-2 py-0.5 text-xs font-semibold text-black">
