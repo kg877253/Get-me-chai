@@ -1,56 +1,55 @@
-import Link from "next/link"
 import { fetchexplorecreators } from "@/actions/useraction"
+import CreatorCard from "@/components/CreatorCard"
 
-export const metadata = { title: "Explore Creators - Get Me A Chai" }
-export const dynamic = "force-dynamic" // har baar fresh data
+export const metadata = {
+    title: "Explore Creators - Get Me A Chai",
+}
+
+export const dynamic = "force-dynamic"
 
 const ExplorePage = async () => {
     const creators = await fetchexplorecreators()
 
+    const heightcalc =
+        creators.length > 0
+            ? `calc(90vh - 4.5rem - 3rem)`
+            : `calc(90vh - 4.5rem)`
+
     return (
-        <div className="px-3 text-white">
+        <div
+            className="px-3 text-white"
+            style={{ height: heightcalc }}
+        >
             <div className="mx-auto max-w-6xl px-2 py-10">
-                <h1 className="mb-2 text-3xl font-bold">Explore Creators</h1>
-                <p className="mb-8 text-gray-400">Discover creators and support their work.</p>
+
+                {/* Page Header */}
+                <div className="mb-10 text-center">
+                    <h1 className="text-3xl font-extrabold tracking-tight md:text-4xl">
+                        <span className="bg-gradient-to-r from-amber-300 via-amber-400 to-orange-500 bg-clip-text text-transparent">
+                            Explore Creators
+                        </span>
+                    </h1>
+
+                    <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-gray-400 md:text-base">
+                        Discover creators, explore their work, and support
+                        the people who inspire you.
+                    </p>
+
+                    <div className="mx-auto mt-5 h-px w-20 bg-gradient-to-r from-transparent via-amber-500 to-transparent" />
+                </div>
 
                 {creators.length === 0 ? (
-                    <p className="text-gray-400">No creators yet. Be the first!</p>
+                    <p className="text-center text-gray-400">
+                        No creators yet. Be the first!
+                    </p>
                 ) : (
                     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                        {creators.map((c, i) => (
-                            <Link
-                                key={c.username}
-                                href={`/${c.username}`}
-                                className="group overflow-hidden rounded-xl border border-white/10 bg-white/5 transition hover:border-amber-500/60"
-                            >
-                                <div className="relative h-28 bg-gradient-to-r from-amber-900/40 to-slate-900">
-                                    {c.coverpic && (
-                                        // eslint-disable-next-line @next/next/no-img-element
-                                        <img src={c.coverpic} alt="" className="h-full w-full object-cover" />
-                                    )}
-                                    {i < 3 && (
-                                        <span className="absolute right-2 top-2 rounded-full bg-amber-500 px-2 py-0.5 text-xs font-semibold text-black">
-                                            #{i + 1}
-                                        </span>
-                                    )}
-                                </div>
-
-                                <div className="relative -mt-8 px-4 pb-4">
-                                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                                    <img
-                                        src={c.profilepic || "/avatar.gif"}
-                                        alt={c.name}
-                                        className="h-16 w-16 rounded-full border-4 border-[#0b1220] bg-slate-800 object-cover"
-                                    />
-                                    <h2 className="mt-2 text-lg font-semibold transition group-hover:text-amber-400">{c.name}</h2>
-                                    <p className="text-sm text-gray-400">@{c.username}</p>
-
-                                    <div className="mt-3 flex gap-4 text-sm text-gray-300">
-                                        <span>₹{c.totalRaised.toLocaleString("en-IN")} raised</span>
-                                        <span>{c.supporters} supporter{c.supporters !== 1 && "s"}</span>
-                                    </div>
-                                </div>
-                            </Link>
+                        {creators.map((creator, index) => (
+                            <CreatorCard
+                                key={creator.username}
+                                creator={creator}
+                                index={index}
+                            />
                         ))}
                     </div>
                 )}
