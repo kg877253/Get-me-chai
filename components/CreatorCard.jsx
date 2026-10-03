@@ -19,7 +19,6 @@ const CreatorCard = ({ creator, index }) => {
         const centerY = rect.height / 2
 
         const maxTilt = 5
-
         const rotateY =
             ((x - centerX) / centerX) * maxTilt
 
