@@ -30,11 +30,7 @@ const CreatorCard = ({ creator, index }) => {
         )
     }
 
-    const handleMouseLeave = () => {
-        setTransform(
-            "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)"
-        )
-    }
+    const handleMouseLeave = () => {setTransform("perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)")}
 
     return (
         <Link
