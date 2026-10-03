@@ -1,4 +1,4 @@
-# Get-me-chai
+# Get-me-chai ☕
 
 Get-me-chai is a website where people can support their favourite creators by buying them a chai. A fan doesn't need to make an account to pay, and the money goes directly to the creator's Razorpay account.
 
