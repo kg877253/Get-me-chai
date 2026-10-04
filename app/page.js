@@ -19,12 +19,12 @@ export default function Home() {
         </p>
 
         <div className="relative flex flex-row gap-4 m-2">
-          <Animatedbutton>
+          {/* <Animatedbutton>
             <Link href="/signup">
               <span className="absolute  inset-x-2 bottom-1 h-px scale-x-0 bg-gradient-to-r from-amber-200 via-emerald-200 to-transparent transition-transform duration-300 group-hover/link:scale-y-100" />
               <span className="relative">Start Here</span>
             </Link>
-          </Animatedbutton>
+          </Animatedbutton> */}
           <Link
             href="/signup"
             className="rounded-md bg-amber-500 hover:bg-amber-400 px-4.5 py-3.5 text-base font-semibold text-black transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
@@ -35,7 +35,7 @@ export default function Home() {
           <Animatedbutton>
             <Link href="/about">
               <span className="absolute inset-x-2 bottom-1 h-px scale-x-0 bg-gradient-to-r from-amber-200 via-emerald-200 to-transparent transition-transform duration-300 group-hover/link:scale-y-100" />
-              <span className="relative">Read more</span>
+              <span className="relative font-semibold">Read more</span>
             </Link>
           </Animatedbutton>
 
