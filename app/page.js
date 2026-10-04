@@ -5,7 +5,7 @@ import Animatedbutton from "@/components/Animatedbutton";
 
 export default function Home() {
   return (
-    <>
+    <main>
       {/* Hero */}
       <div className="relative min-h-[45vh] flex flex-col items-center justify-center text-white px-4 sm:px-6 py-10 sm:py-0 overflow-hidden">
         {/* Premium glow, dotted bg ke upar subtle depth ke liye */}
@@ -104,6 +104,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-    </>
+    </main>
   );
 }
