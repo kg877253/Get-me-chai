@@ -47,7 +47,7 @@ const Navbar = () => {
     const menuItems = [
         ...(role === "creator" ? [{ href: "/dashboard", label: "Dashboard", icon: ICONS.dashboard }] : []),
         ...(role === "user" ? [{ href: "/me", label: "My Profile", icon: ICONS.user }] : []),
-        ...(role === "creator" ? [{ href: `/${session?.user?.username}`, label: `${session?.user?.username} page`, icon: ICONS.page }] : []),
+        ...(role === "creator" && session?.user?.username ? [{ href: `/${session.user.username}`, label: `${session.user.username} page`, icon: ICONS.page }] : []),
     ]
 
     const isActive = (href) => (href === "/" ? pathname === "/" : pathname?.startsWith(href))

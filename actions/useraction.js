@@ -104,6 +104,9 @@ export const initiatePayment = async (amount, to_username, paymentform) => {
 export const fetchuser = async (username) => {
     await dbConnect()
 
+    if (typeof username !== "string") {
+        return { error: "Invalid username" }
+    }
     const user = await User.findOne({ username })
         .select(" -razorpaysecret -email").lean()
     if (!user) {
@@ -157,20 +160,25 @@ export const updateprofile = async (data) => {
         if (RESERVED.includes(newUsername.toLowerCase())) {
             return { error: "This username is not allowed" }
         }
-        const taken = await User.findOne({ username: newUsername })
+        const taken = await User.findOne({
+            username: new RegExp(`^${escapeRegex(newUsername)}$`, "i"),
+            _id: { $ne: me._id },
+        })
         if (taken) return { error: "Username already exists" }
     }
 
     if (!f.name?.trim()) return { error: "Name is required" }
     if (f.profilepic && !/^https?:\/\//i.test(f.profilepic)) return { error: "Invalid profile picture URL" }
     if (f.coverpic && !/^https?:\/\//i.test(f.coverpic)) return { error: "Invalid cover picture URL" }
-
+    if (f.razorpayid && f.razorpayid !== me.razorpayid && !f.razorpaysecret) {
+        return { error: "If " }
+    }
     const updates = {
         name: f.name,
         username: newUsername,
         profilepic: f.profilepic,
         coverpic: f.coverpic,
-        profilecompleted: Boolean(newUsername && f.name && (f.razorpayid || me.razorpayid)),
+        profilecompleted: Boolean(newUsername && f.name && (f.razorpayid || me.razorpayid) && (f.razorpaysecret || me.razorpaysecret)),
     }
     if (f.razorpayid) updates.razorpayid = f.razorpayid
     if (f.razorpaysecret) updates.razorpaysecret = encrypt(f.razorpaysecret.trim())
@@ -217,6 +225,10 @@ export const createpost = async (data) => {
 export const fetchposts = async (username) => {
     await dbConnect()
 
+
+    if (typeof username !== "string") {
+        return { error: "Invalid username" }
+    }
     const posts = await Post.find({ creatorusername: username })
         .select("caption image likecount createdAt")
         .sort({ createdAt: -1 })
@@ -330,6 +342,9 @@ export const fetchpoststats = async (username) => {
 
 // Last 30 din ka daily earnings, graph ke liye. Missing din ₹0 se fill hote hain
 export const fetchearningsgraph = async (username) => {
+    if (typeof username !== "string") return []
+    const me = await getCurrentUser()
+    if (!me || me.username !== username) return []
     await dbConnect()
 
     const since = new Date()
