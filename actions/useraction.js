@@ -35,7 +35,7 @@ export const searchCreators = async (query) => {
 // Order create + payment record create + order details client ko return
 // Errors throw nahi karte, return karte hain (production me thrown error ka message client tak nahi pahunchta)
 export const initiatePayment = async (amount, to_username, paymentform) => {
-    if (typeof username !== "string") return []
+    if (typeof to_username !== "string" || !to_username) return { error: "Creator not found" }
 
     await dbConnect()
 
@@ -121,7 +121,7 @@ export const fetchuser = async (username) => {
 
 // Supporters list: sirf successful payments, sirf zaroori fields
 export const fetchpayments = async (username) => {
-    if (typeof username !== "string") return []
+    if (typeof username !== "string") return { list: [], total: 0, totalRaised: 0 }
     await dbConnect()
 
     const [list, total, sumResult] = await Promise.all([
