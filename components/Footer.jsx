@@ -64,7 +64,7 @@ const Footer = () => {
         </div>
 
         <div className="mt-5 flex flex-col gap-2 border-t border-white/10 px-2 pt-4 text-sm text-zinc-500 sm:flex-row sm:items-center sm:justify-between">
-          <p>Copyright &copy; {currentYear} Get-me-chai. All rights reserved.</p>
+          <p> Copyright &copy;  {currentYear} Get-me-chai. All rights reserved.</p>
           <p className="text-zinc-400">Chai-powered support, clean and simple.</p>
         </div>
       </div>
