@@ -145,30 +145,6 @@ npm run dev
 
 Open http://localhost:3000. Don't push `.env.local` to GitHub, and use Razorpay **test mode** keys while developing.
 
-## Deploying (what I did)
-
-- **Database:** MongoDB Atlas free cluster. Network access has to allow `0.0.0.0/0` because Vercel does not have fixed IPs.
-- **Hosting:** Vercel. Add all the env variables above, with the production URL in `NEXTAUTH_URL` and `NEXT_PUBLIC_BASE_URL`. `NEXT_PUBLIC_` values are baked in at build time, so redeploy after changing them.
-- **OAuth:** add the production callback URLs (`https://your-site/api/auth/callback/google` and `/github`). GitHub allows one callback per app, so I made a separate GitHub OAuth app for production.
-- Use the same `ENCRYPTION_KEY` everywhere the same database is used.
-
-## Known limitations
-
-I would rather list these than hide them.
-
-- A payment is marked done when the browser comes back from Razorpay. If someone pays and closes the tab straight away, it stays pending. A Razorpay webhook is the proper fix and is on my list.
-- No rate limiting yet on payment creation and creator search.
-- Post, profile and cover images are URLs that the creator pastes. There is no image upload yet.
-- Razorpay is in test mode only.
-- No automated tests yet.
-
-## What I want to add next
-
-- Razorpay webhook and cleanup of old pending payments
-- Rate limiting
-- Image upload (Cloudinary or Uploadthing)
-- CSV export of payments
-- Email receipts
 
 ## Built by
 

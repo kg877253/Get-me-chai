@@ -48,10 +48,11 @@ const PaymentForm = ({ username, creatorName }) => {
                 prefill: { name: paymentform.name },
                 notes: { address: "Get-me-chai" },
                 theme: { color: "#d97706" },
-                modal: { ondismiss: () => setLoading(false) }
+                modal: { escape: true, backdropclose: true, ondismiss: () => setLoading(false), }
             }
 
             const rzp1 = new window.Razorpay(options)
+            rzp1.on("payment.failed", () => setLoading(false))
             rzp1.open()
 
         } catch (err) {
@@ -120,8 +121,8 @@ const PaymentForm = ({ username, creatorName }) => {
                         disabled={loading}
                         onClick={() => { setPaymentform({ ...paymentform, amount: amt }); setError("") }}
                         className={`flex-1 min-w-[70px] py-2.5 px-3 rounded-xl cursor-pointer text-sm font-medium transition disabled:opacity-50 disabled:cursor-not-allowed border ${Number(paymentform.amount) === amt
-                                ? "bg-amber-500 border-amber-500 text-black"
-                                : "bg-transparent border-white/10 hover:border-white/25 text-white/80"
+                            ? "bg-amber-500 border-amber-500 text-black"
+                            : "bg-transparent border-white/10 hover:border-white/25 text-white/80"
                             }`}
                     >
                         ₹{amt}
