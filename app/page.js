@@ -1,6 +1,7 @@
 "use client"
 import Image from "next/image";
 import Link from "next/link";
+import Animatedbutton from "@/components/Animatedbutton";
 
 export default function Home() {
   return (
@@ -18,6 +19,12 @@ export default function Home() {
         </p>
 
         <div className="relative flex flex-row gap-4 m-2">
+          <Animatedbutton>
+            <Link href="/signup">
+              <span className="absolute  inset-x-2 bottom-1 h-px scale-x-0 bg-gradient-to-r from-amber-200 via-emerald-200 to-transparent transition-transform duration-300 group-hover/link:scale-y-100" />
+              <span className="relative">Start Here</span>
+            </Link>
+          </Animatedbutton>
           <Link
             href="/signup"
             className="rounded-md bg-amber-500 hover:bg-amber-400 px-4.5 py-3.5 text-base font-semibold text-black transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
@@ -25,13 +32,20 @@ export default function Home() {
             Start Here
           </Link>
 
-          <Link
+          <Animatedbutton>
+            <Link href="/about">
+              <span className="absolute inset-x-2 bottom-1 h-px scale-x-0 bg-gradient-to-r from-amber-200 via-emerald-200 to-transparent transition-transform duration-300 group-hover/link:scale-y-100" />
+              <span className="relative">Read more</span>
+            </Link>
+          </Animatedbutton>
+
+          {/* <Link
             href="/about"
             className="group/link relative overflow-hidden rounded-md border-2 border-white/10 bg-white/[0.04] px-4.5 py-3.5 text-base font-medium text-zinc-300 transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-200/25 hover:bg-white/15 hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-200/45 active:translate-y-0"
           >
             <span className="absolute inset-x-2 bottom-1 h-px scale-x-0 bg-gradient-to-r from-amber-200 via-emerald-200 to-transparent transition-transform duration-300 group-hover/link:scale-x-100" />
             <span className="relative">Read more</span>
-          </Link>
+          </Link> */}
         </div>
       </div>
 
