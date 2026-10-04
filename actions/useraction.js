@@ -364,6 +364,7 @@ export const fetchearningsgraph = async (username) => {
 
 // Explore page: saare completed creators, total raised ke hisaab se sorted
 export const fetchexplorecreators = async () => {
+
     await dbConnect()
 
     const creators = await User.aggregate([
