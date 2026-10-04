@@ -35,6 +35,8 @@ export const searchCreators = async (query) => {
 // Order create + payment record create + order details client ko return
 // Errors throw nahi karte, return karte hain (production me thrown error ka message client tak nahi pahunchta)
 export const initiatePayment = async (amount, to_username, paymentform) => {
+    if (typeof username !== "string") return []
+
     await dbConnect()
 
     const name = (paymentform?.name || "").trim()
@@ -119,6 +121,7 @@ export const fetchuser = async (username) => {
 
 // Supporters list: sirf successful payments, sirf zaroori fields
 export const fetchpayments = async (username) => {
+    if (typeof username !== "string") return []
     await dbConnect()
 
     const [list, total, sumResult] = await Promise.all([
@@ -171,7 +174,7 @@ export const updateprofile = async (data) => {
     if (f.profilepic && !/^https?:\/\//i.test(f.profilepic)) return { error: "Invalid profile picture URL" }
     if (f.coverpic && !/^https?:\/\//i.test(f.coverpic)) return { error: "Invalid cover picture URL" }
     if (f.razorpayid && f.razorpayid !== me.razorpayid && !f.razorpaysecret) {
-        return { error: "If " }
+        return { error: "If Key ID is changed, then Key Secret is also required" }
     }
     const updates = {
         name: f.name,
@@ -321,6 +324,7 @@ export const fetchmylikedcreators = async () => {
 
 // Creator ki total posts aur un sabka combined likes count
 export const fetchpoststats = async (username) => {
+    if (typeof username !== "string") return { totalPosts: 0, totalLikes: 0 }
     await dbConnect()
 
     const result = await Post.aggregate([
