@@ -108,7 +108,7 @@ const DashboardOverview = ({ form, savedpic, email, postStats, username,onOpenEd
                     ))}
                 </ul>
 
-                {percent < 100 && (
+                {percent <= 100 && (
                     <button onClick={onOpenEdit} className="mt-10 border-2 p-1 border-amber-400/30 rounded-3xl text-sm font-semibold cursor-pointer text-amber-400 hover:text-amber-300 hover:bg-amber-400/10 hover:border-amber-400/50 transition-colors">
                         Edit Profile
                     </button>
