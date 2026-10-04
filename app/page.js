@@ -74,7 +74,7 @@ export default function Home() {
             <Image className="bg-slate-300 rounded-full p-3 mb-2 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6" src="/people.gif" width={75} height={75} alt="" unoptimized />
             <p className="font-bold text-center">Build your community</p>
             <p className="text-center text-sm sm:text-base text-white/60">
-              Supporters stick around, follow updates, and come back again.
+              Stick around and come back again
             </p>
           </div>
         </div>
@@ -95,7 +95,7 @@ export default function Home() {
           <div className="flex-1 flex flex-col items-center text-center gap-3 p-5">
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-sky-300/15 text-sky-200 font-bold">2</span>
             <p className="font-semibold">Share your link</p>
-            <p className="text-sm text-white/55">Drop your get-me-chai.com/username link anywhere your fans are.</p>
+            <p className="text-sm text-white/55">Drop your get-me-chai-self.vercel.app/username link anywhere your fans are.</p>
           </div>
           <div className="flex-1 flex flex-col items-center text-center gap-3 p-5">
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-green-300/15 text-green-200 font-bold">3</span>
