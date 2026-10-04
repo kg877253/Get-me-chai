@@ -110,7 +110,7 @@ const Navbar = () => {
             {/* Mouse ke saath chalne wali glow */}
             <div
                 className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover/nav:opacity-100"
-                style={{ background: "radial-gradient(130px circle at var(--x) var(--y), rgba(245, 158, 11, 0.06), rgba(16, 185, 129, 0.03), transparent 46%)" }}
+                style={{ background: "radial-gradient(150px circle at var(--x) var(--y), rgba(245, 158, 11, 0.06), rgba(16, 185, 129, 0.03), transparent 46%)" }}
             />
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-amber-200/50 to-transparent" />
 

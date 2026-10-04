@@ -78,7 +78,7 @@ const Paymentpage = ({ username }) => {
     return (
         <>
             <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="afterInteractive" />
-            <div className="min-h-screen bg-[#0a0a0c] text-white flex flex-col items-center">
+            <div className="min-h-screen bg-[#02060f]/60 text-white flex flex-col items-center">
 
                 {/* Full-bleed cover */}
                 <div className={`relative w-full transition-opacity duration-700 ${mounted ? "opacity-100" : "opacity-0"}`}>

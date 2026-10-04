@@ -21,12 +21,12 @@ const Footer = () => {
   return (
     <footer
       onPointerMove={handlePointerMove}
-      className="group/footer relative overflow-hidden border-t border-white/10 bg-[#020817]/90 px-3 text-white"
+      className="group/footer relative overflow-hidden border-t border-white/10 bg-[#020817]/80 px-3 text-white"
       style={{ "--x": "50%", "--y": "50%" }}
     >
       <div
         className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover/footer:opacity-100"
-        style={{ background: "radial-gradient(350px circle at var(--x) var(--y), rgba(245, 158, 11, 0.12), rgba(16, 185, 129, 0.08), transparent 48%)" }}
+        style={{ background: "radial-gradient(250px circle at var(--x) var(--y), rgba(245, 158, 11, 0.06), rgba(16, 185, 129, 0.03), transparent 46%)" }}
       />
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-200/50 to-transparent" />
 

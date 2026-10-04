@@ -91,7 +91,7 @@ const Dashboard = () => {
     return (
         <>
             {profiledone && (
-                <div className="min-h-[85vh] bg-[#0a0e17] text-white px-4 py-10">
+                <div className="min-h-[85vh] bg-[#02060f]/50 text-white px-4 py-10">
                     <div className="max-w-4xl mx-auto">
 
                         {/* Tabs */}
